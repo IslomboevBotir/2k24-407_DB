@@ -68,10 +68,24 @@ SELECT courses.course_name, COUNT(enrollments.student_id)FROM courses
 LEFT JOIN enrollments ON courses.course_id = enrollments.course_id 
 GROUP BY courses.course_name;
 --3.3.2
-SELECT courses.course_name FROM courses
-JOIN enrollments ON courses.course_id = enrollments.course_id
-GROUP BY courses.course_name ORDER BY COUNT(enrollments.student_id) DESC;
---3.4.1
+SELECT student_id, first_name, last_name
+FROM students s
+WHERE EXISTS (
+    SELECT 1
+    FROM enrollments e
+    WHERE e.student_id = s.student_id
+    GROUP BY e.student_id
+    HAVING COUNT(e.course_id) > (
+        SELECT AVG(course_count)
+        FROM (
+            SELECT COUNT(course_id) AS course_count
+            FROM enrollments
+            GROUP BY student_id
+        ) AS avg_courses
+    )
+);
+
+
 SELECT first_name, last_name
 FROM students
 ORDER BY last_name;
@@ -82,9 +96,40 @@ JOIN enrollments ON students.student_id = enrollments.student_id
 JOIN courses ON enrollments.course_id = courses.course_id
 WHERE students.enrollment_year > 2015-01-01 and courses.course_name = 'Tarix';
 --3.5
-SELECT  courses.course_name FROM courses JOIN enrollments ON courses.course_id = enrollments.course_id
-WHERE enrollments.student_id = (SELECT enrollments.student_id FROM enrollments GROUP BY enrollments.student_id
-ORDER BY AVG(enrollments.grade) LIMIT 1);
+-- Talabalarni topish uchun, ular qabul qilgan kurslar soni o'rtacha kurs sonidan yuqori bo'lganlar
+SELECT s.student_id, s.first_name, s.last_name
+FROM students s
+JOIN (
+    SELECT student_id
+    FROM enrollments
+    GROUP BY student_id
+    HAVING COUNT(course_id) > (
+        SELECT AVG(course_count)
+        FROM (
+            SELECT COUNT(course_id) AS course_count
+            FROM enrollments
+            GROUP BY student_id
+        ) AS avg_courses
+    )
+) AS above_avg ON s.student_id = above_avg.student_id;
+
+
+SELECT c.course_name
+FROM courses c
+WHERE c.course_id IN (
+    SELECT e.course_id
+    FROM enrollments e
+    WHERE e.student_id = (
+        SELECT student_id
+        FROM enrollments
+        GROUP BY student_id
+        ORDER BY AVG(grade) DESC
+        LIMIT 1
+    )
+);
+
+
+
 --3.6.1
 UPDATE enrollments
 SET grade = 3
