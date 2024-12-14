@@ -1,16 +1,13 @@
-CREATE TABLE courses (
-    course_id SERIAL PRIMARY KEY,
-    course_name VARCHAR(100),
-    credit_hours INTEGER
+create database university;
+create table students(
+student_id serial primary key,
+first_name varchar(50),
+last_name varchar(50),
+birthdate date,
+enrollment_year int
 );
--- CREATE TABLE enrollments (
---     enrollment_id SERIAL PRIMARY KEY,
---     student_id INTEGER NOT NULL,
---     course_id INTEGER NOT NULL,
---     grade INTEGER,
---     FOREIGN KEY (student_id) REFERENCES students(student_id),
---     FOREIGN KEY (course_id) REFERENCES courses(course_identifikatori)
--- );
+
+
 CREATE TABLE enrollments (
     enrollment_id SERIAL PRIMARY KEY,
     student_id INTEGER REFERENCES students(student_id),
