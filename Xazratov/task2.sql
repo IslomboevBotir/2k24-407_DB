@@ -129,3 +129,12 @@ WHERE grade = 4;
 DELETE FROM students
 WHERE student_id NOT IN (SELECT DISTINCT student_id FROM enrollment);
 
+
+-- 4
+
+SELECT c.course_name AS "Kurs nomi",
+       ROUND(AVG(e.grade), 2) AS "O'rtacha baho"
+FROM courses c
+         LEFT JOIN enrollment e ON c.course_id = e.course_id
+GROUP BY c.course_name
+ORDER BY c.course_name;
