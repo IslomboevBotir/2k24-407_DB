@@ -77,3 +77,55 @@ VALUES (1, 1, 5),
        (9, 8, 5),
        (10, 9, 3),
        (10, 10, 4);
+
+
+--3
+SELECT first_name AS "Ism",
+       last_name AS "Familiya",
+       birthdate AS "Tug'ilgan sana",
+       enrollment_year AS "O'qishga kirgan yil"
+FROM students;
+
+SELECT s.first_name AS "Ism",
+       s.last_name AS "Familiya"
+FROM students s
+         JOIN enrollment e ON s.student_id = e.student_id
+         JOIN courses c ON e.course_id = c.course_id
+WHERE c.course_name = 'Matematika';
+
+SELECT s.first_name AS "Ism",
+       s.last_name AS "Familiya",
+       AVG(e.grade) AS "O'rtacha baho"
+FROM students s
+         JOIN enrollment e ON s.student_id = e.student_id
+GROUP BY s.student_id
+HAVING AVG(e.grade) < 4;
+
+SELECT s.first_name AS "Ism",
+       s.last_name AS "Familiya",
+       c.course_name AS "Kurs nomi"
+FROM students s
+         JOIN enrollment e ON s.student_id = e.student_id
+         JOIN courses c ON e.course_id = c.course_id;
+
+
+SELECT first_name AS "Ism",
+       last_name AS "Familiya"
+FROM students
+WHERE student_id NOT IN (SELECT student_id FROM enrollment);
+
+
+SELECT c.course_name AS "Kurs nomi",
+       COUNT(e.student_id) AS "Talabalar soni"
+FROM courses c
+         LEFT JOIN enrollment e ON c.course_id = e.course_id
+GROUP BY c.course_name
+ORDER BY "Talabalar soni" DESC;
+
+UPDATE enrollment
+SET grade = 3
+WHERE grade = 4;
+
+DELETE FROM students
+WHERE student_id NOT IN (SELECT DISTINCT student_id FROM enrollment);
+
