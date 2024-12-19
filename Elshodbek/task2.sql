@@ -1,17 +1,17 @@
-CREATE TABLE courses (
+CREATE TABLE if NOT exists courses (
     course_id SERIAL PRIMARY KEY,
     course_name VARCHAR(100),
     credit_hours INTEGER
 );
 
-CREATE TABLE students(
+CREATE TABLE if NOT exists students(
     student_id serial primary key,
     first_name varchar,
 	last_name varchar,
 	birthdate date,
 	envanment_year int);
 
-CREATE TABLE enrollments (
+CREATE TABLE if NOT exists enrollments (
     enrollment_id SERIAL PRIMARY KEY,
 	grade INTEGER,
     student_id INT REFERENCES students(student_id),
@@ -31,18 +31,18 @@ INSERT INTO courses (course_name, credit_hours) VALUES
 ('Economics', 3),
 ('Philosophy', 2);
 
-INSERT INTO students (first_name, last_name, birthdate) 
+INSERT INTO students (first_name, last_name, birthdate,enrollment_year) 
 VALUES 
-    ('Ali', 'Karimov', '2000-01-15'),
-    ('Madina', 'Tursunova', '2001-05-22'),
-    ('Jasur', 'Rahimov', '1999-03-11'),
-    ('Dilnoza', 'Nazarova', '2002-07-19'),
-    ('Aziz', 'Usmonov', '1998-12-05'),
-    ('Shahnoza', 'Aliyeva', '2000-09-30'),
-    ('Sardor', 'Bekmurodov', '2003-02-14'),
-    ('Mohira', 'Shukurova', '2001-11-28'),
-    ('Elshodbek', 'Turayev', '2005-11-21'),
-    ('Gulnoza', 'Hamidova', '2000-08-08');
+    ('Ali', 'Karimov', '2000-01-15',2000),
+    ('Madina', 'Tursunova', '2001-05-22',1999),
+    ('Jasur', 'Rahimov', '1999-03-11',2001),
+    ('Dilnoza', 'Nazarova', '2002-07-19',2013),
+    ('Aziz', 'Usmonov', '1998-12-05',2017),
+    ('Shahnoza', 'Aliyeva', '2000-09-30',2005),
+    ('Sardor', 'Bekmurodov', '2003-02-14',2016),
+    ('Mohira', 'Shukurova', '2001-11-28',2018),
+    ('Elshodbek', 'Turayev', '2005-11-21',1998),
+    ('Gulnoza', 'Hamidova', '2000-08-08',2007);
 
 
 INSERT INTO enrollments (student_id, course_id, grade) VALUES
