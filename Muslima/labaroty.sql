@@ -2,7 +2,7 @@
 drop table if exists students;
 drop table if exists courses;
 drop table if exists enrollment;
-
+-- muslima --
 
 create table if not exists students
 (
