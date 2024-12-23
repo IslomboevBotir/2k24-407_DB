@@ -1,17 +1,20 @@
-create table courses(
-course_id serial primary key,
-course_name VARCHAR(100),
-credit_hours integer);
+CREATE TABLE IF NOT EXISTS courses (
+    course_id SERIAL PRIMARY KEY,
+    course_name VARCHAR(100),
+    credit_hours INTEGER
+);
 
-create table enrollments(
-enrollment_id serial primary key,
-grade INTEGER,
-student_id INTEGER,
-course_id integer,
-constraint fk_student foreign key (student_id)
-references students(student_id) on delete cascade,
-constraint fk_course foreign key (course_id)
-references courses(course_id) on delete cascade);
+CREATE TABLE IF NOT EXISTS enrollments (
+    enrollment_id SERIAL PRIMARY KEY,
+    grade INTEGER,
+    student_id INTEGER,
+    course_id INTEGER,
+    CONSTRAINT fk_student FOREIGN KEY (student_id)
+        REFERENCES students(student_id) ON DELETE CASCADE,
+    CONSTRAINT fk_course FOREIGN KEY (course_id)
+        REFERENCES courses(course_id) ON DELETE CASCADE
+);
+
 
 INSERT INTO courses (course_name, credit_hours) VALUES
 ('Mathematics', 4),
