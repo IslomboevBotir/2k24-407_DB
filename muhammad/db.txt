@@ -1,0 +1,193 @@
+CREATE TABLE IF NOT EXISTS courses (
+    course_id SERIAL PRIMARY KEY,
+    course_name VARCHAR(100),
+    credit_hours INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS enrollments (
+    enrollment_id SERIAL PRIMARY KEY,
+    grade INTEGER,
+    student_id INTEGER,
+    course_id INTEGER,
+    CONSTRAINT fk_student FOREIGN KEY (student_id)
+        REFERENCES students(student_id) ON DELETE CASCADE,
+    CONSTRAINT fk_course FOREIGN KEY (course_id)
+        REFERENCES courses(course_id) ON DELETE CASCADE
+);
+
+
+INSERT INTO courses (course_name, credit_hours) VALUES
+('Mathematics', 4),
+('History', 3),
+('Physics', 4),
+('Chemistry', 4),
+('Biology', 3),
+('Computer Science', 5),
+('Literature', 3),
+('Philosophy', 2),
+('Economics', 3),
+('Art', 2);
+
+INSERT INTO enrollments (student_id, course_id, grade) VALUES
+(1, 1, 85), (1, 2, 90), (1, 3, 78),
+(2, 1, 88), (2, 4, 92), (2, 5, 75),
+(3, 2, 89), (3, 3, 76), (3, 6, 84),
+(4, 4, 95), (4, 5, 67), (4, 7, 82),
+(5, 1, 74), (5, 8, 91), (5, 9, 85),
+(6, 2, 80), (6, 3, 88), (6, 10, 90),
+(7, 4, 77), (7, 5, 83), (7, 6, 86),
+(8, 1, 92), (8, 7, 70), (8, 8, 81),
+(9, 2, 88), (9, 9, 74), (9, 10, 79),
+(10, 3, 93), (10, 4, 85), (10, 5, 88);
+
+
+
+
+3.1. Queries
+•	Display all students with their first name, last name, and date of birth.
+•	Find all students enrolled in the Mathematics course.
+•	Display all students with a GPA lower than 4.
+
+
+select  first_name,last_name ,birthdate  from students;
+
+select s.student_id, s.first_name, s.last_name, c.course_name from enrollments e 
+join students s 
+on e.student_id = s.student_id j
+oin courses c 
+on e.course_id = c.course_id 
+where course_name = 'Mathematics';
+
+select s.student_id, s.first_name, s.last_name, avg(e.grade) as GPA 
+from enrollments e
+join students s
+on e.student_id = s.student_id
+group by s.student_id, s.first_name, s.last_name
+having avg(e.grade) > 82;
+
+
+
+.2. Joining data (JOIN)
+•	List students along with the names of the courses they are enrolled in.
+•	Find students who are not enrolled in any courses.
+
+
+SELECT s.first_name, s.last_name, c.course_name
+FROM students s
+JOIN enrollments e ON s.student_id = e.student_id
+JOIN courses c ON e.course_id = c.course_id;
+
+SELECT s.first_name, s.last_name
+FROM students s
+LEFT JOIN enrollments e ON s.student_id = e.student_id 
+WHERE e.student_id IS NULL;
+
+
+
+
+
+
+3.3. Grouping and Aggregates
+•	Count the number of students enrolled in each course.
+•	Find the course with the most students.
+
+
+SELECT c.course_name, COUNT(e.student_id) AS student_count
+FROM courses c
+JOIN enrollments e ON c.course_id = e.course_id
+GROUP BY c.course_id, c.course_name
+ORDER BY student_count DESC;
+
+SELECT c.course_name, COUNT(e.student_id) AS student_count
+FROM courses c
+JOIN enrollments e ON c.course_id = e.course_id
+GROUP BY c.course_id, c.course_name
+ORDER BY student_count DESC
+LIMIT 1;
+
+
+3.4. Filtering and Sorting
+•	List students sorted by last name.
+•	Find all students enrolled after 2015 and enrolled in the History course.
+
+
+SELECT first_name, last_name, birthdate, enrollment_year
+FROM students
+ORDER BY last_name, first_name;
+
+SELECT s.first_name, s.last_name, s.enrollment_year, c.course_name
+FROM students s
+JOIN enrollments e ON s.student_id = e.student_id
+JOIN courses c ON e.course_id = c.course_id
+WHERE s.enrollment_year > 2015 AND c.course_name = 'History';
+
+
+3.5. Working with Subqueries
+•	Find students enrolled in more courses than the average number of courses per student.
+•	List the names of courses enrolled by students with the lowest average grade.
+
+
+
+SELECT s.first_name, s.last_name
+FROM students s
+WHERE (SELECT COUNT(e.course_id) 
+       FROM enrollements e 
+       WHERE e.student_id = s.student_id) > 
+      (SELECT AVG(course_count) 
+       FROM (SELECT COUNT(e.course_id) AS course_count 
+             FROM enrollements e 
+             GROUP BY e.student_id) subquery);
+
+
+
+SELECT c.course_name, e.grade, s.first_name
+FROM courses c
+JOIN enrollments e ON c.course_id = e.course_id
+JOIN students s ON s.student_id = e.student_id
+WHERE e.student_id = (
+    SELECT student_id
+    FROM enrollments
+    GROUP BY student_id
+    ORDER BY AVG(grade)
+    LIMIT 1
+);
+
+
+
+3.6. Modifying Data
+•	Update the grade of all students with a current grade of 4 to 3.
+•	Remove all students who are not enrolled in any courses.
+•	Add a new student and enroll him in two courses.
+
+
+UPDATE enrollments
+SET grade = 100
+WHERE grade = 90;
+
+DELETE FROM students
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM enrollments
+    WHERE students.student_id = enrollments.student_id);
+
+
+INSERT INTO students (first_name, last_name, birthdate, enrollment_year)
+VALUES ('Alice', 'Williams', '2003-06-15', 2023);
+
+SELECT student_id FROM students WHERE first_name = 'Alice' AND last_name = 'Williams';
+
+INSERT INTO enrollments (student_id, course_id, grade)
+VALUES (21, 1, 85), (21, 3, 90);
+
+
+4. Additional task (optional)
+Write a query to calculate the average score of all students for each course and output the results in the following format:
+•	Course name
+•	Average score
+
+
+SELECT c.course_name, AVG(e.grade) AS average_score
+FROM courses c
+JOIN enrollments e ON c.course_id = e.course_id
+GROUP BY c.course_id, c.course_name
+ORDER BY c.course_name;
