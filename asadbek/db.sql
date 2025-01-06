@@ -121,7 +121,7 @@ SELECT s.first_name, s.last_name
 FROM students s
 JOIN enrollements e ON s.student_id = e.student_id
 JOIN courses c ON e.course_id = c.course_id
-WHERE c.course_name = 'History' or s.birthdate > '2015-01-01';
+WHERE c.course_name = 'History' and s.birthdate > '2015-01-01';
 
 
 -- 3.5
