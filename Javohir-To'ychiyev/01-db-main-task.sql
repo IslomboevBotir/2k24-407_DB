@@ -1,5 +1,4 @@
-create database university;
-create table students(
+create table if not exists students(
 student_id serial primary key,
 first_name varchar(50),
 last_name varchar(50),
@@ -7,8 +6,7 @@ birthdate date,
 enrollment_year int
 );
 
-
-CREATE TABLE enrollments (
+CREATE TABLE if not exists enrollments (
     enrollment_id SERIAL PRIMARY KEY,
     student_id INTEGER REFERENCES students(student_id),
     course_id INTEGER REFERENCES courses(course_id),
@@ -65,27 +63,19 @@ SELECT courses.course_name, COUNT(enrollments.student_id)FROM courses
 LEFT JOIN enrollments ON courses.course_id = enrollments.course_id 
 GROUP BY courses.course_name;
 --3.3.2
-SELECT student_id, first_name, last_name
-FROM students s
-WHERE EXISTS (
-    SELECT 1
-    FROM enrollments e
-    WHERE e.student_id = s.student_id
-    GROUP BY e.student_id
-    HAVING COUNT(e.course_id) > (
-        SELECT AVG(course_count)
-        FROM (
-            SELECT COUNT(course_id) AS course_count
-            FROM enrollments
-            GROUP BY student_id
-        ) AS avg_courses
-    )
-);
 
+SELECT course_name, COUNT(enrollments.student_id) AS num_students
+FROM courses
+JOIN enrollments ON courses.course_id = enrollments.course_id
+GROUP BY course_name;
 
-SELECT first_name, last_name
-FROM students
-ORDER BY last_name;
+SELECT course_name, COUNT(enrollments.student_id) AS num_students
+FROM courses
+JOIN enrollments ON courses.course_id = enrollments.course_id
+GROUP BY course_name
+ORDER BY num_students DESC
+LIMIT 1;
+
 
 --3.4.2
 SELECT students.first_name, students.last_name FROM students
@@ -154,21 +144,6 @@ select * from enrollments;
 
 
 select * from students;
-
-
-
-
-
--- CREATE TABLE enrollments (
---     enrollment_id SERIAL PRIMARY KEY,
---     student_id INTEGER NOT NULL,
---     course_id INTEGER NOT NULL,
---     grade INTEGER,
---     FOREIGN KEY (student_id) REFERENCES students(student_id),
---     FOREIGN KEY (course_id) REFERENCES courses(course_identifikatori)
--- );
-
-
 
 
 
