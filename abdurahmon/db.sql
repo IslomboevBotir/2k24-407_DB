@@ -1,4 +1,10 @@
-CREATE TABLE students (
+drop table if exists students;
+drop table if exists courses;
+drop table if exists enrollment;
+
+
+CREATE TABLE if not exists students
+(
     student_id SERIAL PRIMARY KEY,      
     first_name VARCHAR(50) NOT NULL,    
     last_name VARCHAR(50) NOT NULL,    
@@ -6,13 +12,15 @@ CREATE TABLE students (
 );
 
 
-CREATE TABLE courses (
+CREATE TABLE if not exists courses 
+(
     course_id SERIAL PRIMARY KEY,       
     course_name VARCHAR(100) NOT NULL, 
     credit_hours INTEGER NOT NULL      
 );
 
-CREATE TABLE enrollments (
+CREATE TABLE if not exists enrollments 
+(
     enrollment_id SERIAL PRIMARY KEY,  
     student_id INTEGER NOT NULL,        
     course_id INTEGER NOT NULL,        
