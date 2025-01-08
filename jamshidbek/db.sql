@@ -1,187 +1,159 @@
--- 1
-CREATE TABLE studentt (
-    student_id SERIAL PRIMARY KEY,
-    first_name VARCHAR(50),
-    last_name VARCHAR(50),
-    date_of_birth DATE,
-    gpa DECIMAL(3, 2)
+create table if not exists courses (
+    course_id SERIAL PRIMARY KEY,
+    course_name VARCHAR(100),
+    credit_hours INTEGER
 );
 
 
-INSERT INTO studentt (first_name, last_name, date_of_birth, gpa)
-VALUES 
-('John', 'Doe', '2000-01-15', 3.5),
-('Jane', 'Smith', '1999-03-22', 3.9),
-('Alice', 'Johnson', '2001-07-10', 2.8),
-('Bob', 'Brown', '2000-11-25', 3.2),
-('Charlie', 'Davis', '1998-06-18', 3.6),
-('Emily', 'Wilson', '2002-02-02', 3.7),
-('David', 'Taylor', '2001-09-10', 3.1),
-('Grace', 'Miller', '1999-12-01', 3.8),
-('Henry', 'Moore', '2000-05-15', 3.4),
-('Isabel', 'Anderson', '1998-08-20', 3.9);
-
-select *from studentt;
-
-
---  2
-
- create table courses(
-course_id serial primary key,
-course_name varchar(100),
-credit_hours INTEGER
+create table if not exists enrollments (
+    enrollment_id SERIAL PRIMARY KEY,
+    student_id INTEGER REFERENCES students(student_id),
+    course_id INTEGER REFERENCES courses(course_id),
+    grade INTEGER
 );
 
-INSERT INTO courses (course_name, credit_hours)
-VALUES 
-    ('Mathematics', 3),
-    ('History', 4),
-    ('Physics', 3),
-    ('Computer Science', 3),
-    ('Chemistry', 4),
-    ('Biology', 3),
-    ('English Literature', 2),
-    ('Economics', 3),
-    ('Psychology', 3),
-    ('Sociology', 3);
-select * from courses;
 
-create table enrollments(
-	enrollment_id serial primary key, 
-	student_id int,
-	foreign key (student_id) REFERENCES studentt(student_id),
-	course_id int,
-	foreign key (course_id) REFERENCES courses(course_id),
-	grade int
-	);
+insert into courses (course_name, credit_hours) values
+ ('Mathematics 101', 3),
+ ('Introduction to Programming', 4),
+ ('Database Systems', 3),
+ ('Web Development', 4),
+ ('Machine Learning', 3),
+ ('Data Structures and Algorithms', 2),
+ ('Computer Networks', 3),
+ ('Artificial Intelligence', 3),
+ ('Software Engineering', 4),
+ ('Computer Graphics', 2);
 
-INSERT INTO enrollments (student_id, course_id, grade)
-VALUES (1, 1, 90),  -- Student 1, Mathematics, grade 90
-       (1, 2, 85),  -- Student 1, History, grade 85
-       (1, 3, 88),  -- Student 1, Physics, grade 88
-       (1, 4, 91),  -- Student 1, Computer Science, grade 91
-       (2, 1, 78),  -- Student 2, Mathematics, grade 78
-       (2, 2, 84),  -- Student 2, History, grade 84
-       (2, 5, 92),  -- Student 2, Chemistry, grade 92
-       (2, 6, 76),  -- Student 2, Biology, grade 76
-       (3, 3, 87),  -- Student 3, Physics, grade 87
-       (3, 4, 93),  -- Student 3, Computer Science, grade 93
-       (3, 5, 89),  -- Student 3, Chemistry, grade 89
-       (3, 7, 80),  -- Student 3, English Literature, grade 80
-       (4, 6, 72),  -- Student 4, Biology, grade 72
-       (4, 8, 88),  -- Student 4, Economics, grade 88
-       (4, 9, 85),  -- Student 4, Psychology, grade 85
-       (5, 2, 90),  -- Student 5, History, grade 90
-       (5, 3, 81),  -- Student 5, Physics, grade 81
-       (5, 4, 92),  -- Student 5, Computer Science, grade 92
-       (6, 1, 85),  -- Student 6, Mathematics, grade 85
-       (6, 5, 80),  -- Student 6, Chemistry, grade 80
-       (6, 6, 83),  -- Student 6, Biology, grade 83
-       (7, 2, 95),  -- Student 7, History, grade 95
-       (7, 7, 77),  -- Student 7, English Literature, grade 77
-       (7, 8, 70),  -- Student 7, Economics, grade 70
-       (8, 9, 91),  -- Student 8, Psychology, grade 91
-       (8, 10, 84), -- Student 8, Sociology, grade 84
-       (9, 1, 79),  -- Student 9, Mathematics, grade 79
-       (9, 2, 80),  -- Student 9, History, grade 80
-       (10, 3, 88); -- Student 10, Physics, grade 88
 
-select *from enrollments;
+insert into enrollments (student_id, course_id, grade) values
+    (4, 2, 4), (7, 5, 3), (1, 8, 5), (5, 1, 2), (10, 3, 4),
+    (2, 7, 3), (15, 10, 4), (20, 6, 5), (13, 9, 2), (11, 4, 3),
+    (14, 2, 4), (19, 5, 5), (17, 8, 3), (8, 10, 4), (16, 7, 5),
+    (1, 1, 2), (2, 3, 3), (15, 6, 4), (10, 9, 2), (5, 4, 5),
+    (4, 7, 3), (13, 10, 5), (8, 6, 2), (19, 9, 4), (14, 2, 5),
+    (11, 8, 3), (17, 4, 2), (20, 1, 5), (7, 5, 4), (16, 3, 3);
 
---  3.1
-select first_name,last_name,date_of_birth
-from studentt;
+select * from students;
 
-select s.first_name,s.first_name,s.date_of_birth
-from studentt s 
-join enrollments e on s.student_id = e.student_id
-join courses c on e.course_id = c.course_id
-where course_name = 'Mathematics';
+select first_name, last_name, birth_date
+from students;
 
-SELECT first_name, last_name, date_of_birth, gpa
-FROM studentt
-WHERE gpa < 4;
 
--- 3.2
-select studentt.first_name, studentt.last_name, courses.course_name
-from studentt 
+select students.first_name as name, courses.course_name as course
+from students
+join enrollments 
+on students.student_id = enrollments.student_id
+join courses 
+on courses.course_id = enrollments.course_id
+where courses.course_name = 'Introduction to Programming';
+
+
+select students.first_name, AVG(enrollments.grade) as GPA
+from students
+join enrollments 
+on students.student_id = enrollments.student_id
+group by students.first_name
+having AVG(enrollments.grade) < 4;
+
+
+select students.first_name, students.last_name, courses.course_name
+from students 
 join enrollments  
-on studentt.student_id = enrollments.student_id
+on students.student_id = enrollments.student_id
 join courses  
 on courses.course_id = enrollments.course_id;
 
 
-select studentt.first_name, studentt.last_name
-from studentt 
+select students.first_name, students.last_name
+from students 
 left join enrollments 
-ON studentt.student_id = enrollments.student_id
+ON students.student_id = enrollments.student_id
 where enrollments.enrollment_id IS NULL;
 
 
-SELECT c.course_name, COUNT(e.student_id) AS num_students
-FROM courses c
-LEFT JOIN enrollments e ON c.course_id = e.course_id
-GROUP BY c.course_name
-ORDER BY num_students DESC;
+select courses.course_name, COUNT(enrollments.student_id) as student_count
+from courses 
+join enrollments  
+on courses.course_id = enrollments.course_id
+group by courses.course_name;
 
 
-SELECT c.course_name, COUNT(e.student_id) AS num_students
-FROM courses c
-LEFT JOIN enrollments e ON c.course_id = e.course_id
-GROUP BY c.course_name
-ORDER BY num_students DESC
+select courses.course_name, COUNT(enrollments.student_id) as student_count
+from courses 
+join enrollments 
+on courses.course_id = enrollments.course_id
+group by courses.course_name
+order by student_count DESC
 LIMIT 1;
 
-SELECT s.*
-FROM studentt  s
-JOIN courses e ON s.student_id = c.course_id
-WHERE s.date_of_birth > '2015-01-01'
-AND c.course_name = 'History';
 
-select s.first_name, s.last_name
-from studentt s 
-join enrollments e
-on s.student_id = e.student_id
-JOIN courses c
-on e.course_id = c.course_id
-where s.date_of_birth > 2015 and c.course_name = 'History';
+select last_name, first_name
+from students
+order by last_name;
 
+ALTER TABLE students ADD COLUMN enrollment_year INT;
 
-WITH average_courses AS (
-    SELECT AVG(course_count) AS avg_courses
-    FROM (
-        SELECT student_id, COUNT(course_id) AS course_count
-        FROM enrollments
-        GROUP BY student_id
-    ) AS course_counts
-)
-SELECT s.first_name, COUNT(e.course_id) AS total_courses
-FROM studentt  s
-JOIN enrollments e ON s.student_id = e.student_id
-GROUP BY s.student_id
-HAVING COUNT(e.course_id) > (SELECT avg_courses FROM average_courses);
+select students.first_name, students.last_name
+from students 
+join enrollments 
+on students.student_id = enrollments.student_id
+JOIN courses 
+on enrollments.course_id = courses.course_id
+where students.enrollment_year > 2015 and courses.course_name = 'History';
 
 
-WITH student_avg_grades AS (
-    SELECT student_id, AVG(gpa) AS avg_grade
-    FROM studentt
-    GROUP BY student_id
-),
-lowest_avg_student AS (
-    SELECT student_id
-    FROM student_avg_grades
-    ORDER BY avg_grade ASC
-    LIMIT 1
-)
-SELECT c.course_name
-FROM courses c
-JOIN enrollments e ON c.course_id = e.course_id
-WHERE e.student_id IN (SELECT student_id FROM lowest_avg_student);
+select students.first_name, students.last_name
+from students 
+where 
+    (select COUNT(enrollments.course_id) 
+     from enrollments 
+     where enrollments.student_id = students.student_id) > 
+    (select AVG(course_count) 
+     from (select COUNT(enrollments.course_id) as course_count 
+           from enrollments  
+           group by enrollments.student_id) subquery);
 
 
+select courses.course_name
+from courses 
+join enrollments  
+on courses.course_id = enrollments.course_id
+join 
+    (select student_id, AVG(grade) as avg_grade
+     from enrollments
+     group by student_id
+     order by avg_grade ASC
+     LIMIT 1) subquery 
+	 on enrollments.student_id = subquery.student_id;
 
-SELECT c.course_name, AVG(e.grade) AS average_score
-FROM studentt s
-JOIN enrollments e ON s.student_id = e.student_id
-JOIN courses c ON e.course_id = c.course_id
-GROUP BY c.course_name;
+
+update enrollments
+set grade = 3
+where grade = 4;
+
+
+delete from students
+where student_id NOT IN (select distinct student_id
+from enrollments);
+
+
+insert into students (first_name, last_name, birth_date, enrollment_year) values 
+('Iroda', 'Mahmudzoda', '2001-12-23', 2011);
+
+insert into enrollments (student_id, course_id, grade) values 
+((select MAX(student_id) 
+from students), 2, 5);
+
+insert into students (first_name, last_name, birth_date, enrollment_year) values 
+('Alex', 'Dmetriy', '2003-02-03', 2009);
+
+insert into enrollments (student_id, course_id, grade) values 
+((select MAX(student_id) from students), 9, 4);
+
+
+select courses.course_name, AVG(enrollments.grade) as average_score
+from courses 
+join enrollments 
+on courses.course_id = enrollments.course_id
+group by courses.course_name;
