@@ -1,3 +1,7 @@
+
+--  ====================
+-- ||      TASK 2      ||
+--  ====================
 CREATE TABLE IF NOT EXISTS courses (
     course_id SERIAL PRIMARY KEY,
     course_name VARCHAR(100),
@@ -68,13 +72,13 @@ SELECT
     last_name,
     birthdate
 FROM
-    student;
+    students;
 
 SELECT
     s.first_name,
     s.last_name
 FROM
-    student s
+    students s
     JOIN enrollments e ON s.student_id = e.student_id
     JOIN courses c ON e.course_id = c.course_id
 WHERE
@@ -84,8 +88,8 @@ SELECT
     first_name,
     last_name
 FROM
-    student
-    JOIN enrollments e ON student.student_id = e.student_id
+    students
+    JOIN enrollments e ON students.student_id = e.student_id
 WHERE
     e.grade < 4;
 
@@ -97,7 +101,7 @@ SELECT
     s.last_name,
     c.course_name
 FROM
-    student s
+    students s
     JOIN enrollments e ON s.student_id = e.student_id
     JOIN courses c ON e.course_id = c.course_id;
 
@@ -105,7 +109,7 @@ SELECT
     s.first_name,
     s.last_name
 FROM
-    student s
+    students s
     LEFT JOIN enrollments e ON s.student_id = e.student_id
 WHERE
     e.enrollment_id IS NULL;
@@ -141,7 +145,7 @@ SELECT
     first_name,
     last_name
 FROM
-    student
+    students
 ORDER BY
     last_name;
 
@@ -149,12 +153,12 @@ SELECT
     s.first_name,
     s.last_name
 FROM
-    student s
+    students s
     JOIN enrollments e ON s.student_id = e.student_id
     JOIN courses c ON e.course_id = c.course_id
 WHERE
     c.course_name = 'History'
-    AND s.birthdate > '2015-01-01';
+    AND s.enrollment_year > '2015';
 
 
 
@@ -163,7 +167,7 @@ SELECT
     s.first_name,
     s.last_name
 FROM
-    student s
+    students s
 WHERE
     (
         SELECT
@@ -217,7 +221,7 @@ WHERE
     grade = 4;
 
 DELETE FROM
-    student
+    students
 WHERE
     student_id NOT IN (
         SELECT
@@ -227,7 +231,7 @@ WHERE
     );
 
 INSERT INTO
-    student (first_name, last_name, birthdate)
+    students (first_name, last_name, birthdate)
 VALUES
     ('John', 'Doe', '2003-05-15');
 
