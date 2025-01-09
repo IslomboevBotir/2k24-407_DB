@@ -1,16 +1,16 @@
-CREATE TABLE students (
+CREATE TABLE IF NOT EXISTS students (
     student_id SERIAL PRIMARY KEY,
     name VARCHAR(100),
     birth_date DATE,
     age INT,
     enrollment_year INT);
 
-CREATE TABLE courses (
+CREATE TABLE IF NOT EXISTS courses (
     course_id SERIAL PRIMARY KEY,
     course_name VARCHAR(100),
     credit_hours INTEGER);
 
-CREATE TABLE enrollments (
+CREATE TABLE IF NOT EXISTS enrollments (
     enrollment_id SERIAL PRIMARY KEY,
     student_id INTEGER REFERENCES students(student_id),
     course_id INTEGER REFERENCES courses(course_id),
