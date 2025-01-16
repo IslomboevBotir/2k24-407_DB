@@ -1,10 +1,24 @@
 SELECT * FROM public.students
 ORDER BY student_id ASC 
 
+
+CREATE TABLE IF NOT EXISTS courses (
+    course_id SERIAL PRIMARY KEY,
+    course_name VARCHAR(100),
+    credit_hours INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS enrollments (
+    enrollment_id SERIAL PRIMARY KEY,
+    student_id INTEGER REFERENCES students(student_id),
+    course_id INTEGER REFERENCES courses(course_id),
+    grade INTEGER
+);
+
 -- 3.1. Queries
 
 -- Display all students with their first name, last name, and date of birth.
-SELECT first_name, last_name, birthdate FROM students
+SELECT first_name, last_name, birthdate FROM students;
 
 -- Find all students enrolled in the Mathematics course.
 SELECT s.first_name, s.last_name, c.course_name FROM
