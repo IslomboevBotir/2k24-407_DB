@@ -15,6 +15,33 @@ CREATE TABLE IF NOT EXISTS enrollments (
     grade INTEGER
 );
 
+INSERT INTO courses (course_name, credit_hours)
+VALUES
+('Mathematics', 3),
+('History', 4),
+('Physics', 3),
+('Chemistry', 4),
+('Biology', 3),
+('English', 2),
+('Computer Science', 3),
+('Philosophy', 2),
+('Economics', 3),
+('Psychology', 2);
+
+
+INSERT INTO enrollments (student_id, course_id, grade)
+VALUES
+(1, 1, 5), (1, 2, 4), (1, 3, 3),
+(2, 1, 4), (2, 4, 5), (2, 5, 4),
+(3, 2, 3), (3, 3, 4), (3, 6, 5),
+(4, 7, 3), (4, 1, 2), (4, 5, 4),
+(5, 6, 3), (5, 8, 5), (5, 9, 4),
+(6, 1, 5), (6, 2, 3), (6, 10, 4),
+(7, 3, 5), (7, 4, 2), (7, 6, 4),
+(8, 7, 3), (8, 8, 4), (8, 9, 2),
+(9, 1, 3), (9, 2, 4), (9, 5, 5),
+(10, 6, 3), (10, 7, 5), (10, 8, 4);
+
 -- 3.1. Queries
 
 -- Display all students with their first name, last name, and date of birth.
